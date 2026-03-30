@@ -2,18 +2,9 @@ package com.yeahthon.app;
 
 import java.util.Scanner;
 
-/**
- * desc：使用组数模拟一次性队列
- * func：
- *      1、start指向数组中的第一一个元素的前一个位置；
- *      2、end指向数组中中最后一个元素；
- *      3、队列已满的条件：end == maxsize - 1；
- *      4、队列为空的条件：end == start；
- *      5、start、end的初始索引均为-1；
- */
-public class QueueByArray {
+public class QueueByCircleArray {
     public static void main(String[] args) {
-        QueueByArrayConstruct queue = new QueueByArrayConstruct(6);
+        CircleArray queue = new CircleArray(4);
         // 接收用户输入
         char key = ' ';
         Scanner scanner = new Scanner(System.in);
@@ -65,67 +56,80 @@ public class QueueByArray {
     }
 }
 
-class QueueByArrayConstruct {
+class CircleArray {
     private int maxSize;
-    // 指向队列头部元素的前一个位置
+    // 指向队列中的第一个元素
     private int start;
-    // 指向队列尾部元素
+    // 指向队列中下一个可以插入元素的位置，永远是一个“空位置”
     private int end;
-    private int[] arrayConstruct;
+    private int[] circleArray;
 
-    // 创建队列构造器
-    public QueueByArrayConstruct(int arrMaxSize) {
-        maxSize = arrMaxSize;
-        arrayConstruct = new int[maxSize];
-        start = -1;
-        end = -1;
+    public CircleArray(int inputMaxSize) {
+        maxSize = inputMaxSize;
+        circleArray = new int[maxSize];
     }
 
     // 判断队列是否满
     public boolean isFull() {
-        return end == maxSize - 1;
+        return (end + 1) % maxSize == start;
     }
 
     // 判断队列是否为空
     public boolean isEmpty() {
-        return end == start;
+        return start == end;
     }
 
     // 添加数据到队列
     public void addQueue(int element) {
+        // 判断队列是否满
         if (isFull()) {
-            System.out.println("队列已满，不能添加新元素！");
+            System.out.println("队列已满，不能加入数据！");
             return;
         }
-        end++;
-        arrayConstruct[end] = element;
+
+        // 直接添加数据
+        circleArray[end] = element;
+        // 后移end
+        end = (end + 1) % maxSize;
     }
 
-    // 出队列
+    // 从队列中取出数据
     public int getQueue() {
         if (isEmpty()) {
-            throw new RuntimeException("队列为空，不能获取数据！");
+            // 抛出异常
+            throw new RuntimeException("队列为空，不能取出数据！");
         }
-        start++;
-        return arrayConstruct[start];
+
+        int result = circleArray[start];
+        start = (start + 1) % maxSize;
+        return result;
     }
 
-    // 显示队列的所有数据
+    // 获取当前队列中有效的元素个数
+    public int getElementSize() {
+        return (end + maxSize - start) % maxSize;
+    }
+
+    // 显示队列中的所有元素
     public void showQueue() {
         if (isEmpty()) {
-            System.out.println("队列为空，不能取数据！");
+            System.out.println("队列为空！");
             return;
         }
-        for (int i = 0; i < arrayConstruct.length; i++) {
-            System.out.printf("arr[%d]=%d\n", i, arrayConstruct[i]);
+
+        // 通过从start开始遍历，遍历一定元素个数
+        System.out.println("开始遍历队列！");
+        for (int i = start; i < start + getElementSize(); i++) {
+            System.out.printf("arr[%d]=%d\n", i % maxSize, circleArray[i % maxSize]);
         }
     }
 
-    // 显示队列的头部数据
+    // 显示队列头部元素
     public int headQueue() {
         if (isEmpty()) {
-            throw new RuntimeException("队列为空，不能取数据！");
+            throw new RuntimeException("队列中没有元素！");
         }
-        return arrayConstruct[start + 1];
+
+        return circleArray[start];
     }
 }
