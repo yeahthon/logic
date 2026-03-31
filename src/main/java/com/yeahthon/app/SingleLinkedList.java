@@ -6,19 +6,35 @@ import lombok.Setter;
 
 /**
  * desc：单向链表
+ * func：
  */
 public class SingleLinkedList {
     public static void main(String[] args) {
-        // 创建节点
+        // 创建节点，无序插入链表
+        HeroNode hero4 = new HeroNode(4, "林冲", "豹子头");
+        HeroNode hero3 = new HeroNode(3, "卢俊义", "玉麒麟");
         HeroNode hero1 = new HeroNode(1, "宋江", "及时雨");
         HeroNode hero2 = new HeroNode(2, "吴用", "智多星");
-        HeroNode hero3 = new HeroNode(3, "卢俊义", "玉麒麟");
 
         SingleLinedListManager singleLinedListManager = new SingleLinedListManager();
-        singleLinedListManager.add(hero1);
-        singleLinedListManager.add(hero2);
-        singleLinedListManager.add(hero3);
+        singleLinedListManager.addByOrder(hero4);
+        singleLinedListManager.addByOrder(hero3);
+        singleLinedListManager.addByOrder(hero1);
+        singleLinedListManager.addByOrder(hero2);
 
+        System.out.println("初始链表：");
+        singleLinedListManager.showSingleLinedList();
+
+//        System.out.println();
+//        HeroNode newHero = new HeroNode(2, "吴用!", "智多星!");
+//        singleLinedListManager.updateElement(newHero);
+//        System.out.println("修改后的链表：");
+//        singleLinedListManager.showSingleLinedList();
+
+        System.out.println();
+        singleLinedListManager.deleteElement(1);
+        singleLinedListManager.deleteElement(4);
+        System.out.println("删除后的链表:");
         singleLinedListManager.showSingleLinedList();
     }
 }
@@ -30,7 +46,7 @@ class SingleLinedListManager {
 
     // 向链表中添加元素：找到最后节点，最后节点的next指向新元素
     public void add(HeroNode element) {
-        // 使用一个辅助指针节点来遍历链表，通过该节点表示next所指向的元素来辅助遍历
+        // TODO 使用一个辅助指针节点来遍历链表temp，通过该节点表示next所指向的元素来辅助遍历，即让temp表示当前节点
         // 初始化该辅助指针节点为头结点
         HeroNode temp = head;
         // TODO 遍历，找到链表的最后一个元素，循环停止的逻辑：当前元素的next为空
@@ -39,10 +55,106 @@ class SingleLinedListManager {
             if (temp.getNext() == null) {
                 break;
             }
-            // TODO 节点后移
+            // TODO 辅助指针节点后移，即将下一个节点赋值给辅助指针节点
             temp = temp.getNext();
         }
         temp.setNext(element);
+    }
+
+    // 按照顺序向链表中添加元素
+    public void addByOrder(HeroNode element) {
+        // TODO 通过辅助指针节点temp来遍历链表，辅助指针节点temp即表示当前元素
+        // 因为是单项链表，新元素所插入的位置应为与temp的next位置
+        HeroNode temp = head;
+
+        // 设置标志位，标志当前插入的元素是否已经存在
+        boolean flag = false;
+
+        while (true) {
+            // 链表为空
+            if (temp.getNext() == null) {
+                break;
+            }
+
+            if (temp.getNext().getId() > element.getId()) {
+                // 辅助指针节点到达所要找的位置
+                break;
+            } else if (temp.getNext().getId() == element.getId()) {
+                // 需要添加的元素已经存在
+                flag = true;
+                break;
+            }
+
+            // TODO 辅助指针节点后移，即将下一个节点赋值给辅助指针节点
+            temp = temp.getNext();
+        }
+
+        if (flag) {
+            // 元素已经存在
+            System.out.println("需要添加的元素已经存在，编号为：" + element.getId());
+        } else {
+            // 直接插入到temp的后面
+            element.setNext(temp.getNext());
+            temp.setNext(element);
+        }
+    }
+
+    // 修改节点信息
+    public void updateElement(HeroNode element) {
+        if (head.getNext() == null) {
+            System.out.println("链表为空Q！");
+            return;
+        }
+
+        HeroNode temp = head;
+        // 标志位，表示是否找到该节点
+        boolean flag = false;
+        while (true) {
+            if (temp.getNext() == null) {
+                break;
+            }
+
+            if (temp.getId() == element.getId()) {
+                flag = true;
+                break;
+            }
+
+            temp = temp.getNext();
+        }
+
+        if (flag) {
+            temp.setName(element.getName());
+            temp.setNickName(element.getNickName());
+        } else {
+            System.out.println("没有找到所要修改的元素！");
+        }
+    }
+
+    // 删除节点
+    public void deleteElement(int id) {
+        HeroNode temp = head;
+        // 标志位：是否已经找到待删除的节点
+        boolean flag = false;
+        while (true) {
+            if (temp.getNext() == null) {
+                break;
+            }
+
+            // 找到待删除节点的前一个位置
+            if (temp.getNext().getId() == id) {
+                flag = true;
+                break;
+            }
+
+            // 节点后移
+            temp = temp.getNext();
+        }
+
+        if (flag) {
+            temp.setNext(temp.getNext().getNext());
+        } else {
+            System.out.println("没有找到需要删除的节点编号：" + id);
+        }
     }
 
     // 显示链表：遍历
@@ -63,7 +175,7 @@ class SingleLinedListManager {
 
             // 输出节点信息
             System.out.println(temp);
-            // TODO 节点后移
+            // TODO 辅助指针节点后移，即将下一个节点赋值给辅助指针节点
             temp = temp.getNext();
         }
     }
