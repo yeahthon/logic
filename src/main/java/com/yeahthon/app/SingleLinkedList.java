@@ -238,7 +238,7 @@ class SingleLinkedListManager {
     }
 
     // TODO
-    // 头插法
+    // 反转链表：头插法
     public void reverseLinkedList() {
         // 链表为空或者元素个数为1时，无需反转
         if (head.getNext() == null || head.getNext().getNext() == null) {
