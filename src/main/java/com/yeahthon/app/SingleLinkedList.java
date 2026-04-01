@@ -1,6 +1,5 @@
 package com.yeahthon.app;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +15,7 @@ public class SingleLinkedList {
         HeroNode hero1 = new HeroNode(1, "宋江", "及时雨");
         HeroNode hero2 = new HeroNode(2, "吴用", "智多星");
 
-        SingleLinedListManager singleLinedListManager = new SingleLinedListManager();
+        SingleLinkedListManager singleLinedListManager = new SingleLinkedListManager();
         singleLinedListManager.addByOrder(hero4);
         singleLinedListManager.addByOrder(hero3);
         singleLinedListManager.addByOrder(hero1);
@@ -31,16 +30,26 @@ public class SingleLinkedList {
 //        System.out.println("修改后的链表：");
 //        singleLinedListManager.showSingleLinedList();
 
+//        System.out.println();
+//        singleLinedListManager.deleteElement(1);
+//        singleLinedListManager.deleteElement(4);
+//        System.out.println("删除后的链表:");
+//        singleLinedListManager.showSingleLinedList();
+//        System.out.println();
+
+//        System.out.println("链表中当前元素的个数为：" + singleLinedListManager.getLength());
         System.out.println();
-        singleLinedListManager.deleteElement(1);
-        singleLinedListManager.deleteElement(4);
-        System.out.println("删除后的链表:");
+
+//        System.out.println("当前链表中倒数第" + 2 + "个元素为：" + singleLinedListManager.getLastIndexNode(2, singleLinedListManager.getLength()));
+
+        singleLinedListManager.reverseLinkedList();
+        System.out.println("反转后的链表为：");
         singleLinedListManager.showSingleLinedList();
     }
 }
 
 // SingleLinedList管理类
-class SingleLinedListManager {
+class SingleLinkedListManager {
     // 初始化头结点，头结点不存放数据，只表示链表的头
     HeroNode head = new HeroNode(0, "", "");
 
@@ -155,6 +164,76 @@ class SingleLinedListManager {
         } else {
             System.out.println("没有找到需要删除的节点编号：" + id);
         }
+    }
+
+    // TODO
+    // 获取链表中有效节点的个数
+    public int getLength() {
+        HeroNode temp = head;
+        if (temp.getNext() == null) {
+            System.out.println("链表为空！");
+            return 0;
+        }
+
+        int length = 0;
+        while (temp.getNext() != null) {
+            length++;
+            temp = temp.getNext();
+        }
+        return length;
+    }
+
+    // 1、先获取链表的长度
+    // 2、再获取第size-index+1个元素
+    public HeroNode getLastIndexNode(int index, int length) {
+        HeroNode temp = head;
+        if (temp.getNext() == null) {
+            System.out.println("链表为空！");
+            return null;
+        }
+
+        // index校验
+        if (index <= 0 || index > length) {
+            System.out.println("元素索引位置有错！");
+            return null;
+        }
+
+        for (int i = 0; i < length - index + 1; i++) {
+            temp = temp.getNext();
+        }
+
+        return temp;
+    }
+
+    // TODO
+    // 头插法
+    public void reverseLinkedList() {
+        // 链表为空或者元素个数为1时，无需反转
+        if (head.getNext() == null || head.getNext().getNext() == null) {
+            System.out.println("无需反转");
+            return;
+        }
+
+        // 定义辅助指针节点用于遍历，当前遍历节点，当前正在处理的节点
+        HeroNode cur = head.getNext();
+        // 定义一个节点，用于指向temp的下一个节点，防止链断裂
+        HeroNode next = null;
+        // 辅助反转链表头部，哨兵节点
+        HeroNode reverseHead = new HeroNode(0, "", "");
+
+        while (cur != null) {
+            // 先使用next暂存当前temp节点的下一个节点
+            next = cur.getNext();
+            // 接旧头：先让当前cur节点连接新链表头部之后的数据
+            cur.setNext(reverseHead.getNext());
+            // 换新头：再将（当前节点+新链表节点）连接到新的链表头部上
+            reverseHead.setNext(cur);
+            // temp后移
+            cur = next;
+        }
+
+        // 将链表反转
+        head.setNext(reverseHead.getNext());
     }
 
     // 显示链表：遍历
