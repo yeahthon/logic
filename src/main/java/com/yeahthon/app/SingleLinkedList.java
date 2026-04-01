@@ -3,6 +3,8 @@ package com.yeahthon.app;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Stack;
+
 /**
  * desc：单向链表
  * func：
@@ -10,19 +12,19 @@ import lombok.Setter;
 public class SingleLinkedList {
     public static void main(String[] args) {
         // 创建节点，无序插入链表
-        HeroNode hero4 = new HeroNode(4, "林冲", "豹子头");
-        HeroNode hero3 = new HeroNode(3, "卢俊义", "玉麒麟");
-        HeroNode hero1 = new HeroNode(1, "宋江", "及时雨");
-        HeroNode hero2 = new HeroNode(2, "吴用", "智多星");
-
-        SingleLinkedListManager singleLinedListManager = new SingleLinkedListManager();
-        singleLinedListManager.addByOrder(hero4);
-        singleLinedListManager.addByOrder(hero3);
-        singleLinedListManager.addByOrder(hero1);
-        singleLinedListManager.addByOrder(hero2);
-
-        System.out.println("初始链表：");
-        singleLinedListManager.showSingleLinedList();
+//        HeroNode hero4 = new HeroNode(4, "林冲", "豹子头");
+//        HeroNode hero3 = new HeroNode(3, "卢俊义", "玉麒麟");
+//        HeroNode hero1 = new HeroNode(1, "宋江", "及时雨");
+//        HeroNode hero2 = new HeroNode(2, "吴用", "智多星");
+//
+//        SingleLinkedListManager singleLinedListManager = new SingleLinkedListManager();
+//        singleLinedListManager.addByOrder(hero4);
+//        singleLinedListManager.addByOrder(hero3);
+//        singleLinedListManager.addByOrder(hero1);
+//        singleLinedListManager.addByOrder(hero2);
+//
+//        System.out.println("初始链表：");
+//        singleLinedListManager.showSingleLinkedList();
 
 //        System.out.println();
 //        HeroNode newHero = new HeroNode(2, "吴用!", "智多星!");
@@ -38,13 +40,43 @@ public class SingleLinkedList {
 //        System.out.println();
 
 //        System.out.println("链表中当前元素的个数为：" + singleLinedListManager.getLength());
-        System.out.println();
 
 //        System.out.println("当前链表中倒数第" + 2 + "个元素为：" + singleLinedListManager.getLastIndexNode(2, singleLinedListManager.getLength()));
 
-        singleLinedListManager.reverseLinkedList();
-        System.out.println("反转后的链表为：");
-        singleLinedListManager.showSingleLinedList();
+//        singleLinedListManager.reverseLinkedList();
+//        System.out.println("反转后的链表为：");
+//        singleLinedListManager.showSingleLinkedList();
+
+//        System.out.println("反向打印链表：");
+//        singleLinedListManager.reverseShowLinkedList();
+
+        // 创建第一个有序链表
+        SingleLinkedListManager list1 = new SingleLinkedListManager();
+        HeroNode hero2 = new HeroNode(2, "吴用", "智多星");
+        HeroNode hero4 = new HeroNode(4, "林冲", "豹子头");
+        HeroNode hero6 = new HeroNode(6, "武松", "行者");
+        list1.addByOrder(hero2);
+        list1.addByOrder(hero4);
+        list1.addByOrder(hero6);
+        System.out.println("第一个有序链表为：");
+        list1.showSingleLinkedList();
+        System.out.println();
+
+        // 创建第二个有序链表
+        SingleLinkedListManager list2 = new SingleLinkedListManager();
+        HeroNode hero1 = new HeroNode(1, "宋江", "及时雨");
+        HeroNode hero3 = new HeroNode(3, "卢俊义", "玉麒麟");
+        HeroNode hero5 = new HeroNode(5, "关胜", "大刀");
+        list2.addByOrder(hero1);
+        list2.addByOrder(hero3);
+        list2.addByOrder(hero5);
+        System.out.println("第二个有序链表为：");
+        list2.showSingleLinkedList();
+        System.out.println();
+
+        SingleLinkedListManager mergeLinkedList = SingleLinkedListManager.mergeLinkedList(list1, list2);
+        System.out.println("合并后的链表为：");
+        mergeLinkedList.showSingleLinkedList();
     }
 }
 
@@ -236,8 +268,48 @@ class SingleLinkedListManager {
         head.setNext(reverseHead.getNext());
     }
 
+    // 合并两个有序链表，返回依然是有序链表
+    public static SingleLinkedListManager mergeLinkedList(SingleLinkedListManager list1,
+                                                          SingleLinkedListManager list2) {
+        // 新链表用于存放合并后的结果
+        SingleLinkedListManager mergeList = new SingleLinkedListManager();
+
+        // 获取两个链表的首个有效元素
+        HeroNode head1 = list1.head.getNext();
+        HeroNode head2 = list2.head.getNext();
+
+        // 使用辅助指针节点，永远指向新链表的最后一个节点
+        HeroNode current = mergeList.head;
+
+        // 同时遍历两个链表，比较节点大小，将较小的节点加入到新链表
+        while (head1 != null && head2 != null) {
+            if (head1.getId() <= head2.getId()) {
+                // 将head1加入新链表
+                current.setNext(head1);
+                current = head1;
+                // 后移head1指针
+                head1 = head1.getNext();
+            } else {
+                // 将head2加入新链表
+                current.setNext(head2);
+                current = head2;
+                // 后移head2指针
+                head2 = head2.getNext();
+            }
+
+            // 某一个链表先遍历完，另一个链表的剩余部分直接连接到新链表末尾
+            if (head1 != null) {
+                current.setNext(head1);
+            }
+            if (head2 != null) {
+                current.setNext(head2);
+            }
+        }
+        return mergeList;
+    }
+
     // 显示链表：遍历
-    public void showSingleLinedList() {
+    public void showSingleLinkedList() {
         if (head.getNext() == null) {
             System.out.println("链表为空！");
             return;
@@ -256,6 +328,29 @@ class SingleLinkedListManager {
             System.out.println(temp);
             // TODO 辅助指针节点后移，即将下一个节点赋值给辅助指针节点
             temp = temp.getNext();
+        }
+    }
+
+    // 利用栈的特性，逆向打印单向链表
+    public void reverseShowLinkedList() {
+        if (head.getNext() == null) {
+            System.out.println("链表为空!");
+            return;
+        }
+
+        Stack<HeroNode> stack = new Stack<>();
+        // 借助辅助指针节点遍历链表
+        HeroNode cur = head.getNext();
+        while (cur != null) {
+            // 入栈
+            stack.push(cur);
+
+            cur = cur.getNext();
+        }
+
+        // 出栈
+        while (!stack.isEmpty()) {
+            System.out.println(stack.pop());
         }
     }
 }
