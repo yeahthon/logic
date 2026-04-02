@@ -1,6 +1,31 @@
 package com.yeahthon.app;
 
 public class DoubleLinkedList {
+    public static void main(String[] args) {
+        DoubleHeroNode hero4 = new DoubleHeroNode(4, "林冲", "豹子头");
+        DoubleHeroNode hero3 = new DoubleHeroNode(3, "卢俊义", "玉麒麟");
+        DoubleHeroNode hero1 = new DoubleHeroNode(1, "宋江", "及时雨");
+        DoubleHeroNode hero2 = new DoubleHeroNode(2, "吴用", "智多星");
+
+        DoubleHeroNodeManager doubleLinkedList = new DoubleHeroNodeManager();
+        doubleLinkedList.addElement(hero4);
+        doubleLinkedList.addElement(hero3);
+        doubleLinkedList.addElement(hero1);
+        doubleLinkedList.addElement(hero2);
+        System.out.println("双向链表：");
+        doubleLinkedList.showList();
+
+        // 修改
+        DoubleHeroNode newHero2 = new DoubleHeroNode(2, "小吴", "智多星");
+        doubleLinkedList.updateElement(newHero2);
+        System.out.println("修改后的双向链表：");
+        doubleLinkedList.showList();
+
+        // 删除
+        doubleLinkedList.deleteElement(2);
+        System.out.println("删除后的双向链表：");
+        doubleLinkedList.showList();
+    }
 }
 
 class DoubleHeroNodeManager {
