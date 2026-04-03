@@ -4,16 +4,28 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * desc：环形单向链表 + Josephu
+ * desc：环形单向链表
  */
 public class CircleSingleLinkedList {
     public static void main(String[] args) {
         CircleSingleLinkedListManager circleSingleLinkedListManager = new CircleSingleLinkedListManager();
-        circleSingleLinkedListManager.constructCircle(125);
-        System.out.println("环形单项链表的元素如下：");
-        circleSingleLinkedListManager.showCircleLinkedList();
+//        circleSingleLinkedListManager.constructCircle(125);
+//        System.out.println("环形单项链表的元素如下：");
+//        circleSingleLinkedListManager.showCircleLinkedList();
 //        circleSingleLinkedListManager.josephu(125, 10, 20);
-        System.out.println(circleSingleLinkedListManager.hasCircle());
+//        System.out.println(circleSingleLinkedListManager.hasCircle());
+
+        Element element1 = new Element(1);
+        Element element2 = new Element(2);
+        Element element3 = new Element(3);
+        Element element4 = new Element(4);
+        Element element5 = new Element(5);
+        circleSingleLinkedListManager.constructCircleByOrder(element5);
+        circleSingleLinkedListManager.constructCircleByOrder(element4);
+        circleSingleLinkedListManager.constructCircleByOrder(element3);
+        circleSingleLinkedListManager.constructCircleByOrder(element1);
+        circleSingleLinkedListManager.constructCircleByOrder(element2);
+        circleSingleLinkedListManager.showCircleLinkedList();
     }
 }
 
@@ -52,6 +64,49 @@ class CircleSingleLinkedListManager {
                 // 辅助指针后移
                 current = addElement;
             }
+        }
+    }
+
+    // 按照顺序添加元素到环形单向链表，并将head指向最小节点
+    public void constructCircleByOrder(Element element) {
+        // 空链表
+        if (head == null) {
+            head = element;
+            element.setNext(element);
+            return;
+        }
+
+        // 情况1：插入的元素比head小（新最小值）
+        if (element.getId() < head.getId()) {
+            // 找到尾节点（最大值）
+            Element end = head;
+            while (end.getNext() != head) {
+                end = end.getNext();
+            }
+
+            // 插入到head前面
+            end.setNext(element);
+            element.setNext(head);
+
+            // 更新head
+            head = element;
+        } else {
+            // 情况2：插入的元素比head大（插入到中间或末尾）
+            Element current = head;
+
+            while (current.getNext() != head) {
+                // 找到插入位置：current <= element <= next
+                if (current.getId() <= element.getId() &&
+                        element.getId() <= current.getNext().getId()) {
+                    break;
+                }
+                current = current.getNext();
+            }
+
+            // 插入节点
+            Element next = current.getNext();
+            current.setNext(element);
+            element.setNext(next);
         }
     }
 
