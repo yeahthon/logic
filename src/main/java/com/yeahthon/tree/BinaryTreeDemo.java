@@ -29,12 +29,19 @@ public class BinaryTreeDemo {
 //        binaryTree.postOrder();
 
         // 查找测试
-        TreeHeroNode result = binaryTree.searchPreOrder(5);
-        System.out.println("找到[id为" + result.getId() + "，name为" + result.getName() + "]的元素！");
-        TreeHeroNode result1 = binaryTree.searchInfixOrder(3);
-        System.out.println("找到[id为" + result1.getId() + "，name为" + result1.getName() + "]的元素！");
-        TreeHeroNode result2 = binaryTree.searchPostOrder(2);
-        System.out.println("找到[id为" + result2.getId() + "，name为" + result2.getName() + "]的元素！");
+//        TreeHeroNode result = binaryTree.searchPreOrder(5);
+//        System.out.println("找到[id为" + result.getId() + "，name为" + result.getName() + "]的元素！");
+//        TreeHeroNode result1 = binaryTree.searchInfixOrder(3);
+//        System.out.println("找到[id为" + result1.getId() + "，name为" + result1.getName() + "]的元素！");
+//        TreeHeroNode result2 = binaryTree.searchPostOrder(2);
+//        System.out.println("找到[id为" + result2.getId() + "，name为" + result2.getName() + "]的元素！");
+
+        // 测试删除
+        System.out.println("删除前：");
+        binaryTree.preOrder();
+        System.out.println("删除后：");
+        binaryTree.deleteNode(3);
+        binaryTree.preOrder();
     }
 }
 
@@ -99,6 +106,21 @@ class BinaryTree {
             return root.searchPostOrder(id);
         } else {
             return null;
+        }
+    }
+
+    // 删除节点
+    public void deleteNode(int id) {
+        if (root != null) {
+            // 先判断当前节点
+            if (root.getId() == id) {
+                root = null;
+            } else {
+                // 递归删除
+                root.deleteNode(id);
+            }
+        } else {
+            System.out.println("空树不能删除！");
         }
     }
 }
@@ -234,5 +256,30 @@ class TreeHeroNode {
         }
 
         return result;
+    }
+
+    // 删除节点：如果是子节点则删除该子节点，如果是非子结点则删除该树
+    public void deleteNode(int id) {
+        // 1、先判断当前节点的左子节点
+        if (this.left != null && this.left.id == id) {
+            this.left = null;
+            return;
+        }
+
+        // 2、再判断当前节点的右子节点
+        if (this.right != null && this.right.id == id) {
+            this.right = null;
+            return;
+        }
+
+        // 3、当前节点的左右节点都不是，则递归左子节点
+        if (this.left != null) {
+            this.left.deleteNode(id);
+        }
+
+        // 4、递归右子节点
+        if (this.right != null) {
+            this.right.deleteNode(id);
+        }
     }
 }
